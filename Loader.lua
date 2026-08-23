@@ -1,6 +1,6 @@
 -- =====================================================================
--- [[ ABILITY HUB - SUPREME ENTERPRISE EDITION (AUTO FARM & MOP PULL) ]]
--- Build Version: 22.0.0 (Optimized Combat & Smooth Movement)
+-- [[ ABILITY HUB - SUPREME ENTERPRISE EDITION (SAFE HOVER, PULL & REACH) ]]
+-- Build Version: 24.0.0 (Extended Melee & Sword Hitbox Integration)
 -- Target: Blox Fruits (Sea 1, Sea 2, Sea 3 Full Auto Integration)
 -- =====================================================================
 
@@ -23,7 +23,6 @@ local ReplicatedStorage   = game:GetService("ReplicatedStorage")
 local TeleportService     = game:GetService("TeleportService")
 local VirtualUser         = game:GetService("VirtualUser")
 local VirtualInputManager = game:GetService("VirtualInputManager")
-local TweenService        = game:GetService("TweenService")
 
 local LocalPlayer         = Players.LocalPlayer
 local Camera              = Workspace.CurrentCamera
@@ -32,8 +31,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local MainWindow = Rayfield:CreateWindow({
     Name = "Ability Hub ⚡ Supreme Enterprise Edition",
-    LoadingTitle = "กำลังโหลดระบบดึงมอนและออโต้ฟาร์ม...",
-    LoadingSubtitle = "by Master Sovereign - Smooth Combat Edition",
+    LoadingTitle = "กำลังโหลดระบบเพิ่มระยะหมัด/ดาบและออโต้ฟาร์ม...",
+    LoadingSubtitle = "by Master Sovereign - Extended Reach Edition",
     ConfigurationSaving = { Enabled = true, FolderName = "AbilityHubUltimate", FileName = "Config" },
     KeySystem = false,
 })
@@ -46,6 +45,7 @@ local Config = {
     AutoQuest       = true,
     AutoBuso        = true,
     FastAttack      = true,
+    ExtendedReach   = true,  -- เปิดใช้งานระบบเพิ่มระยะหมัด/ดาบ
     SelectedWeapon  = "Melee",
     
     -- แยกฟังก์ชันกดสกิล
@@ -160,7 +160,16 @@ local function EquipWeapon(weaponType)
     end)
 end
 
--- ฟังก์ชันกดสกิลแยก Z, X, C, V แบบอิสระ
+-- ฟังก์ชันขยายฮิตบ็อกซ์ระยะตี (Melee & Sword Reach Expander)
+local function ApplyExtendedReach(enemyRoot)
+    if not Config.ExtendedReach or not enemyRoot then return end
+    pcall(function()
+        enemyRoot.Size = Vector3.new(60, 60, 60)
+        enemyRoot.Transparency = 0.8
+        enemyRoot.CanCollide = false
+    end)
+end
+
 local function ExecuteSkills()
     pcall(function()
         local keysToPress = {}
@@ -198,13 +207,13 @@ Tab_Farm:CreateDropdown({
 })
 
 Tab_Farm:CreateToggle({
-    Name = "⚡ เปิด/ปิด ออโต้ฟาร์ม (บินดึงมอน + ตีเอง)",
+    Name = "⚡ เปิด/ปิด ออโต้ฟาร์ม (บินเหนือหัว + รวบมอน + ตีเอง + ระยะไกล)",
     CurrentValue = false,
     Callback = function(Value)
         Config.AutoFarm = Value
         task.spawn(function()
             while Config.AutoFarm do
-                task.wait(0.1)
+                task.wait(0.05)
                 pcall(function()
                     local char = LocalPlayer.Character
                     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
@@ -231,26 +240,22 @@ Tab_Farm:CreateToggle({
                             local eHum = enemy:FindFirstChild("Humanoid")
                             if eRoot and eHum and eHum.Health > 0 and enemy.Name == quest.Mob and Config.AutoFarm then
                                 targetFound = true
-                                eRoot.CanCollide = false
                                 
-                                -- ดึงมอนมารวมกันใต้ตัวเราแบบสมูท
-                                eRoot.CFrame = hrp.CFrame * CFrame.new(0, -5, 0)
+                                -- ขยายระยะฮิตบ็อกซ์มอน (เพิ่มระยะหมัด/ดาบ)
+                                ApplyExtendedReach(eRoot)
                                 
-                                -- บินพุ่งเข้าหาตำแหน่งมอนสเตอร์อย่างนุ่มนวล
-                                local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear)
-                                local tween = TweenService:Create(hrp, tweenInfo, {CFrame = eRoot.CFrame * CFrame.new(0, 8, 0)})
-                                tween:Play()
+                                -- รวบมอนไว้ด้านล่าง และบินลอยปลอดภัยอยู่บนหัวมอน
+                                eRoot.CFrame = hrp.CFrame * CFrame.new(0, -7, 0)
+                                hrp.CFrame = eRoot.CFrame * CFrame.new(0, 12, 0)
                                 
                                 local tool = char:FindFirstChildOfClass("Tool")
                                 if tool then
-                                    -- ใช้ฟังก์ชันกดตีเอง (Tool Activate & Click)
                                     tool:Activate()
                                     if Config.FastAttack then
                                         VirtualUser:Button1Down(Vector2.new(0,0), Camera.CFrame)
                                         VirtualUser:Button1Up(Vector2.new(0,0), Camera.CFrame)
                                     end
                                     
-                                    -- กดสกิลตามที่เปิดสวิตช์ไว้
                                     ExecuteSkills()
                                 end
                                 break
@@ -259,10 +264,7 @@ Tab_Farm:CreateToggle({
                     end
                     
                     if not targetFound and quest then
-                        -- บินไปจุดเกิดมอนเตอร์เมื่อยังไม่เจอเป้าหมาย
-                        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
-                        local tween = TweenService:Create(hrp, tweenInfo, {CFrame = quest.MobPos * CFrame.new(0, 15, 0)})
-                        tween:Play()
+                        hrp.CFrame = quest.MobPos * CFrame.new(0, 15, 0)
                     end
                 end)
             end
@@ -283,6 +285,14 @@ Tab_Farm:CreateToggle({
     CurrentValue = true,
     Callback = function(Value)
         Config.FastAttack = Value
+    end,
+})
+
+Tab_Farm:CreateToggle({
+    Name = "🎯 เปิดระบบขยายระยะหมัดและดาบ (Extended Reach)",
+    CurrentValue = true,
+    Callback = function(Value)
+        Config.ExtendedReach = Value
     end,
 })
 

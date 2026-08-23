@@ -1,10 +1,10 @@
--- [[ Ability Hub - Master Sovereign x WindUI Edition ]]
+-- [[ Ability Hub - Master Sovereign x WindUI Fixed Edition ]]
 if not game:IsLoaded() then 
     game.Loaded:Wait() 
 end
 
--- โหลด WindUI Library จาก GitHub ของ Footagesus
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/main_example.lua"))()
+-- โหลด WindUI ของจริงจากไฟล์หลัก (main.lua)
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/main.lua"))()
 
 -- สร้างหน้าต่างหลักของ UI (Window)
 local Window = WindUI:CreateWindow({

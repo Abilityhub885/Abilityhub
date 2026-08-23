@@ -1,6 +1,6 @@
 -- =====================================================================
--- [[ ABILITY HUB - SUPREME ENTERPRISE EDITION (FIXED UI) ]]
--- Build Version: 20.2.0 (Complete Tabs & Modular Skills)
+-- [[ ABILITY HUB - SUPREME ENTERPRISE EDITION (AUTO FARM & MOP PULL) ]]
+-- Build Version: 22.0.0 (Optimized Combat & Smooth Movement)
 -- Target: Blox Fruits (Sea 1, Sea 2, Sea 3 Full Auto Integration)
 -- =====================================================================
 
@@ -23,6 +23,7 @@ local ReplicatedStorage   = game:GetService("ReplicatedStorage")
 local TeleportService     = game:GetService("TeleportService")
 local VirtualUser         = game:GetService("VirtualUser")
 local VirtualInputManager = game:GetService("VirtualInputManager")
+local TweenService        = game:GetService("TweenService")
 
 local LocalPlayer         = Players.LocalPlayer
 local Camera              = Workspace.CurrentCamera
@@ -31,9 +32,9 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local MainWindow = Rayfield:CreateWindow({
     Name = "Ability Hub ⚡ Supreme Enterprise Edition",
-    LoadingTitle = "กำลังโหลดระบบฟาร์มและตั้งค่าสกิล...",
-    LoadingSubtitle = "by Master Sovereign - Fixed Edition",
-    ConfigurationSaving = { Enabled = true, FolderName = "AbilityHubClean", FileName = "Config" },
+    LoadingTitle = "กำลังโหลดระบบดึงมอนและออโต้ฟาร์ม...",
+    LoadingSubtitle = "by Master Sovereign - Smooth Combat Edition",
+    ConfigurationSaving = { Enabled = true, FolderName = "AbilityHubUltimate", FileName = "Config" },
     KeySystem = false,
 })
 
@@ -55,7 +56,7 @@ local Config = {
 }
 
 -- =====================================================================
--- EXPANDED QUEST DATABASE (LEVEL 1 TO 2550+)
+-- EXPANDED QUEST DATABASE (LEVEL 1 TO 2450+)
 -- =====================================================================
 local QuestRegistry = {
     -- [ SEA 1 ]
@@ -139,16 +140,27 @@ local function EquipWeapon(weaponType)
         if not char then return end
         if not char:FindFirstChildOfClass("Tool") and LocalPlayer.Backpack then
             for _, item in pairs(LocalPlayer.Backpack:GetChildren()) do
-                if item:IsA("Tool") and item.ToolTip == weaponType then
-                    char.Humanoid:EquipTool(item)
-                    break
+                if item:IsA("Tool") then
+                    if weaponType == "Melee" and item.ToolTip == "Melee" then
+                        char.Humanoid:EquipTool(item)
+                        break
+                    elseif weaponType == "Sword" and item.ToolTip == "Sword" then
+                        char.Humanoid:EquipTool(item)
+                        break
+                    elseif weaponType == "Blox Fruit" and item.ToolTip == "Blox Fruit" then
+                        char.Humanoid:EquipTool(item)
+                        break
+                    elseif weaponType == "Gun" and item.ToolTip == "Gun" then
+                        char.Humanoid:EquipTool(item)
+                        break
+                    end
                 end
             end
         end
     end)
 end
 
--- ฟังก์ชันกดสกิลแบบแยกอิสระ (Z, X, C, V)
+-- ฟังก์ชันกดสกิลแยก Z, X, C, V แบบอิสระ
 local function ExecuteSkills()
     pcall(function()
         local keysToPress = {}
@@ -160,16 +172,16 @@ local function ExecuteSkills()
         if #keysToPress > 0 then
             for _, keycode in ipairs(keysToPress) do
                 VirtualInputManager:SendKeyEvent(true, keycode, false, game)
-                task.wait(0.02)
+                task.wait(0.03)
                 VirtualInputManager:SendKeyEvent(false, keycode, false, game)
-                task.wait(0.05)
+                task.wait(0.08)
             end
         end
     end)
 end
 
 -- =====================================================================
--- USER INTERFACE TABS (CREATED CORRECTLY WITHOUT OVERLAPS)
+-- USER INTERFACE TABS SETUP
 -- =====================================================================
 local Tab_Farm     = MainWindow:CreateTab("⚡ ระบบฟาร์มหลัก", "crosshair")
 local Tab_Skills   = MainWindow:CreateTab("🎯 ตั้งค่าสกิลออโต้", "zap")
@@ -186,7 +198,7 @@ Tab_Farm:CreateDropdown({
 })
 
 Tab_Farm:CreateToggle({
-    Name = "⚡ เปิด/ปิด ออโต้ฟาร์มเควสเวลตัน",
+    Name = "⚡ เปิด/ปิด ออโต้ฟาร์ม (บินดึงมอน + ตีเอง)",
     CurrentValue = false,
     Callback = function(Value)
         Config.AutoFarm = Value
@@ -220,18 +232,25 @@ Tab_Farm:CreateToggle({
                             if eRoot and eHum and eHum.Health > 0 and enemy.Name == quest.Mob and Config.AutoFarm then
                                 targetFound = true
                                 eRoot.CanCollide = false
-                                eRoot.CFrame = hrp.CFrame * CFrame.new(0, -6, 0)
-                                hrp.CFrame = eRoot.CFrame * CFrame.new(0, 10, 0)
+                                
+                                -- ดึงมอนมารวมกันใต้ตัวเราแบบสมูท
+                                eRoot.CFrame = hrp.CFrame * CFrame.new(0, -5, 0)
+                                
+                                -- บินพุ่งเข้าหาตำแหน่งมอนสเตอร์อย่างนุ่มนวล
+                                local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Linear)
+                                local tween = TweenService:Create(hrp, tweenInfo, {CFrame = eRoot.CFrame * CFrame.new(0, 8, 0)})
+                                tween:Play()
                                 
                                 local tool = char:FindFirstChildOfClass("Tool")
                                 if tool then
+                                    -- ใช้ฟังก์ชันกดตีเอง (Tool Activate & Click)
                                     tool:Activate()
                                     if Config.FastAttack then
                                         VirtualUser:Button1Down(Vector2.new(0,0), Camera.CFrame)
                                         VirtualUser:Button1Up(Vector2.new(0,0), Camera.CFrame)
                                     end
                                     
-                                    -- เรียกใช้ฟังก์ชันกดสกิล
+                                    -- กดสกิลตามที่เปิดสวิตช์ไว้
                                     ExecuteSkills()
                                 end
                                 break
@@ -240,7 +259,10 @@ Tab_Farm:CreateToggle({
                     end
                     
                     if not targetFound and quest then
-                        hrp.CFrame = quest.MobPos * CFrame.new(0, 15, 0)
+                        -- บินไปจุดเกิดมอนเตอร์เมื่อยังไม่เจอเป้าหมาย
+                        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear)
+                        local tween = TweenService:Create(hrp, tweenInfo, {CFrame = quest.MobPos * CFrame.new(0, 15, 0)})
+                        tween:Play()
                     end
                 end)
             end
@@ -256,7 +278,15 @@ Tab_Farm:CreateToggle({
     end,
 })
 
--- --- [ Tab 2: ตั้งค่าสกิลออโต้ ] ---
+Tab_Farm:CreateToggle({
+    Name = "⚔️ เปิดระบบโจมตีต่อเนื่อง (Fast Attack)",
+    CurrentValue = true,
+    Callback = function(Value)
+        Config.FastAttack = Value
+    end,
+})
+
+-- --- [ Tab 2: ตั้งค่าสกิลออโต้ (แยกปุ่ม Z, X, C, V) ] ---
 Tab_Skills:CreateToggle({
     Name = "🌀 ใช้สกิล Z ออโต้",
     CurrentValue = false,

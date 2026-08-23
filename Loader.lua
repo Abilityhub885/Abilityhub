@@ -1,6 +1,6 @@
 -- =====================================================================
--- [[ ABILITY HUB - HYPERSCALE MULTI-SEA SUPREME (MAX LEVEL & AUTO TRANSITION) ]]
--- Build Version: 18.2.0 Ultimate Enterprise Edition
+-- [[ ABILITY HUB - HYPERSCALE MULTI-SEA SUPREME (REVISED & FIXED EDITION) ]]
+-- Build Version: 18.5.0 Ultimate Enterprise Edition
 -- Target Game: Blox Fruits (Sea 1, Sea 2, Sea 3 Complete Integration)
 -- =====================================================================
 
@@ -45,7 +45,7 @@ local UltimateWindow = Rayfield:CreateWindow({
 -- =====================================================================
 local UltimateConfig = {
     AutoFarmLevel       = false,
-    AutoSeaTransition   = true, -- เปิดระบบย้ายไปโลก 2 และ 3 อัตโนมัติ
+    AutoSeaTransition   = true,
     AutoSkillZ          = true,
     AutoSkillX          = true,
     AutoSkillC          = true,
@@ -85,15 +85,15 @@ local UltimateQuestRegistry = {
     { Level = 250,  Mob = "Toga Warrior",       QuestID = "ColosseumQuest",   Index = 1,  NpcPos = CFrame.new(-1580, 8, -3057), MobPos = CFrame.new(-1840, 52, -2750) },
     { Level = 275,  Mob = "Gladiator",          QuestID = "ColosseumQuest",   Index = 2,  NpcPos = CFrame.new(-1580, 8, -3057), MobPos = CFrame.new(-1390, 8, -3200) },
     { Level = 300,  Mob = "Military Spy",       QuestID = "MagmaQuest",       Index = 1,  NpcPos = CFrame.new(-5315, 12, 8515),   MobPos = CFrame.new(-5800, 80, 8830) },
-    { Level = 325, Mob = "Military Warrior",    QuestID = "MagmaQuest",       Index = 2,  NpcPos = CFrame.new(-5315, 12, 8515),   MobPos = CFrame.new(-5960, 15, 8740) },
-    { Level = 375, Mob = "Fishman Warrior",     QuestID = "FishmanQuest",     Index = 1,  NpcPos = CFrame.new(6112, 19, 1565),   MobPos = CFrame.new(6080, 20, 1150) },
-    { Level = 400, Mob = "Fishman Commando",    QuestID = "FishmanQuest",     Index = 2,  NpcPos = CFrame.new(6112, 19, 1565),   MobPos = CFrame.new(6350, 20, 1340) },
-    { Level = 450, Mob = "God's Guard",         QuestID = "SkyExp1Quest",     Index = 1,  NpcPos = CFrame.new(-4721, 845, -1954), MobPos = CFrame.new(-4680, 915, -1920) },
-    { Level = 525, Mob = "Shanda",              QuestID = "SkyExp1Quest",     Index = 2,  NpcPos = CFrame.new(-4721, 845, -1954), MobPos = CFrame.new(-7860, 5555, -370) },
-    { Level = 550, Mob = "Royal Squad",         QuestID = "SkyExp2Quest",     Index = 1,  NpcPos = CFrame.new(-7859, 5545, -380), MobPos = CFrame.new(-7660, 5635, -1450) },
-    { Level = 625, Mob = "Royal Soldier",       QuestID = "SkyExp2Quest",     Index = 2,  NpcPos = CFrame.new(-7859, 5545, -380), MobPos = CFrame.new(-7490, 5625, -1980) },
-    { Level = 700, Mob = "Galley Pirate",       QuestID = "FountainQuest",    Index = 1,  NpcPos = CFrame.new(5259, 38, 4050),   MobPos = CFrame.new(5560, 85, 3950) },
-    { Level = 725, Mob = "Galley Captain",      QuestID = "FountainQuest",    Index = 2,  NpcPos = CFrame.new(5259, 38, 4050),   MobPos = CFrame.new(5320, 60, 4750) },
+    { Level = 325,  Mob = "Military Warrior",   QuestID = "MagmaQuest",       Index = 2,  NpcPos = CFrame.new(-5315, 12, 8515),   MobPos = CFrame.new(-5960, 15, 8740) },
+    { Level = 375,  Mob = "Fishman Warrior",    QuestID = "FishmanQuest",     Index = 1,  NpcPos = CFrame.new(6112, 19, 1565),   MobPos = CFrame.new(6080, 20, 1150) },
+    { Level = 400,  Mob = "Fishman Commando",   QuestID = "FishmanQuest",     Index = 2,  NpcPos = CFrame.new(6112, 19, 1565),   MobPos = CFrame.new(6350, 20, 1340) },
+    { Level = 450,  Mob = "God's Guard",        QuestID = "SkyExp1Quest",     Index = 1,  NpcPos = CFrame.new(-4721, 845, -1954), MobPos = CFrame.new(-4680, 915, -1920) },
+    { Level = 525,  Mob = "Shanda",             QuestID = "SkyExp1Quest",     Index = 2,  NpcPos = CFrame.new(-4721, 845, -1954), MobPos = CFrame.new(-7860, 5555, -370) },
+    { Level = 550,  Mob = "Royal Squad",        QuestID = "SkyExp2Quest",     Index = 1,  NpcPos = CFrame.new(-7859, 5545, -380), MobPos = CFrame.new(-7660, 5635, -1450) },
+    { Level = 625,  Mob = "Royal Soldier",      QuestID = "SkyExp2Quest",     Index = 2,  NpcPos = CFrame.new(-7859, 5545, -380), MobPos = CFrame.new(-7490, 5625, -1980) },
+    { Level = 700,  Mob = "Galley Pirate",      QuestID = "FountainQuest",    Index = 1,  NpcPos = CFrame.new(5259, 38, 4050),   MobPos = CFrame.new(5560, 85, 3950) },
+    { Level = 725,  Mob = "Galley Captain",     QuestID = "FountainQuest",    Index = 2,  NpcPos = CFrame.new(5259, 38, 4050),   MobPos = CFrame.new(5320, 60, 4750) },
 
     -- [ SEA 2: LEVEL 750 - 1500 ]
     { Level = 750,  Mob = "Raider",             QuestID = "Area1Quest",       Index = 1,  NpcPos = CFrame.new(-606, 15, 2292),   MobPos = CFrame.new(-730, 38, 2450) },
@@ -152,29 +152,22 @@ local function GetCurrentPlayerLevel()
     return success and lvl or 1
 end
 
--- ระบบเช็คและทำเควสข้ามโลกอัตโนมัติ (Sea 1 -> Sea 2 เมื่อเลเวล 700 / Sea 2 -> Sea 3 เมื่อเลเวล 1500)
+-- ระบบตรวจสอบและทำเควสข้ามโลกอัตโนมัติ (Sea 1 -> Sea 2 เมื่อเลเวล 700 / Sea 2 -> Sea 3 เมื่อเลเวล 1500)
 local function CheckAndPerformSeaTransition(lvl)
     if not UltimateConfig.AutoSeaTransition then return end
     
     pcall(function()
-        -- ถ้าเลเวล 700 ขึ้นไป และอยู่โลก 1 -> ทำเควสย้ายไปโลก 2
         if lvl >= 700 and game.PlaceId == 2753915549 then
-            local mainGui = LocalPlayer.PlayerGui:FindFirstChild("Main")
-            local questContainer = mainGui and mainGui:FindFirstChild("Quest")
-            
-            -- วาร์ปไปหา NPC ที่ท่าเรือ (Quest Giver สำหรับไปโลก 2)
             local char = LocalPlayer.Character
             if char and char:FindFirstChild("HumanoidRootPart") then
-                char.HumanoidRootPart.CFrame = CFrame.new(-3879, 14, -1950) -- พิกัดกัปตันเรือโลก 1
+                char.HumanoidRootPart.CFrame = CFrame.new(-3879, 14, -1950)
                 task.wait(0.5)
                 ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDressrosa")
             end
-        
-        -- ถ้าเลเวล 1500 ขึ้นไป และอยู่โลก 2 -> ทำเควสย้ายไปโลก 3
         elseif lvl >= 1500 and game.PlaceId == 4442272183 then
             local char = LocalPlayer.Character
             if char and char:FindFirstChild("HumanoidRootPart") then
-                char.HumanoidRootPart.CFrame = CFrame.new(-601, 16, 2853) -- พิกัด NPC บอร์ดทหารเรือ / เควกย้ายไปโลก 3
+                char.HumanoidRootPart.CFrame = CFrame.new(-601, 16, 2853)
                 task.wait(0.5)
                 ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelZou")
             end
@@ -184,8 +177,6 @@ end
 
 local function GetBestQuestData()
     local userLvl = GetCurrentPlayerLevel()
-    
-    -- ทำการตรวจสอบเงื่อนไขข้ามโลกก่อน
     CheckAndPerformSeaTransition(userLvl)
     
     local selectedQ = UltimateQuestRegistry[1]
@@ -197,7 +188,6 @@ local function GetBestQuestData()
     return selectedQ
 end
 
--- ระบบรับเควสและฟาร์มต่อเนื่องจนตัน
 local function VerifyAndFetchQuest(qData)
     pcall(function()
         local mainGui = LocalPlayer.PlayerGui:FindFirstChild("Main")
@@ -257,7 +247,7 @@ end
 -- SECTION 4: USER INTERFACE (UI) CREATION
 -- =====================================================================
 local Tab_Main = UltimateWindow:CreateTab("⚡ ระบบฟาร์มเวลตันออโต้", "swords")
-local Tab_Sea  = UltimateWindow:CreateTab("🌊 ระบบข้ามโลก (Sea 1, 2, 3)", "globe")
+local Tab_Sea  = UltimateWindow:CreateTab("🌊 ระบบข้ามโลกออโต้", "globe")
 
 -- --- [ Tab 1: ฟาร์มเวลตัน ] ---
 Tab_Main:CreateDropdown({
